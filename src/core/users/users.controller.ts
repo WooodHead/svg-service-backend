@@ -9,20 +9,20 @@ import { UsersService } from './users.service';
 export class UsersController {
       constructor(private userService: UsersService) {}
 
-      // Postman tests were passed
+      //Postman tests were passed
       @ApiOperation({summary: 'Create user'})
       @ApiResponse({status: 200, type: [User]})
       @Post('/createUser')
       createUser(@Body() userDto: CreateUserDto) {
-            return this.userService.createUser(userDto)
+           return this.userService.createUser(userDto)
       }
 
-      // Postman tests were passed
+      //Postman tests were passed
       @ApiOperation({summary: 'Get all users'})
       @ApiResponse({status: 200, type: [User]})
       @Get('/getAllUsers')
       getAllUsers() {
-            return this.userService.getAllUsers()
+           return this.userService.getAllUsers()
       }
 
       // Postman tests were passed

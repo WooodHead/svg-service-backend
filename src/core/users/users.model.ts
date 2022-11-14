@@ -19,7 +19,7 @@ export class User extends Model <User, UserCreationAttribute> {
 
       @ApiProperty({example: 1, description: 'Uniq userName'})
       @Column({type: DataType.STRING, unique: true, allowNull: false, primaryKey: true})
-      userName: string;
+      username: string;
 
       @ApiProperty({example: 'psychoduckos@gmail.com', description: 'Uniq user email'})
       @Column({type: DataType.STRING, unique: true, allowNull: false, primaryKey: true})

@@ -1,33 +1,38 @@
-import { Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { CreateUserDto } from 'src/core/users/dto/create.user.dto';
 import { AuthService } from './auth.service';
+import { AuthUserDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
       constructor(private authService: AuthService) {}
-      /*
-      @Post('/auth/login')
-      login() {
-            return this.authService.login(userDto)
+
+      @Post('/login')
+      login(@Body() dto: CreateUserDto) {
+            return this.authService.login(dto)
       }
 
-      @Post('/auth/register')
-      register() {
-            return this.authService.register(userDto)
+      @Post('/register') 
+      register(@Body() dto: CreateUserDto) {
+            return this.authService.register(dto)
       }
-
-      @Post('/auth/recover') 
+/*
+      // Recover - изменить пароль, восстановить учетную запись
+      @Post('/recover') 
       recover() {
             return this.authService.recover(userDto)
       }
 
-      @Get('/auth/recover:code')
+      // Получить код восстановления на почту
+      @Get('/recover:code')
       getRecoverCode() {
             return this.authService.getRecoverCode(userDto)
       }
 
-      @Patch('/auth/recover')
+      // Изменить пароль в бд
+      @Patch('/recover')
       updatePassword() {
             return this.authService.updatePassword(userDto)
       }
-      */
+*/
 }

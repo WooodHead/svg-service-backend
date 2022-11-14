@@ -9,9 +9,10 @@ import { User } from "./core/users/users.model";
 import { Role } from "./core/roles/roles.model";
 import { UserRoles } from "./core/roles/user-roles.model";
 import { RolesModule } from "./core/roles/roles.module";
+import { AuthController } from "./auth/auth.controller";
 
 @Module({
-    controllers: [UsersController, RolesController],
+    controllers: [UsersController, RolesController, AuthController],
     providers: [],
     imports: [
         ConfigModule.forRoot({

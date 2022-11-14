@@ -31,8 +31,8 @@ export class UsersService {
         return users
       }
     
-      async getUserByUsername(userName: string) {
-        const user = await this.userRepository.findOne({where: {userName}, include: {all: true}})
+      async getUserByUsername(username: string) {
+        const user = await this.userRepository.findOne({where: {username}, include: {all: true}})
         return user
       }
 

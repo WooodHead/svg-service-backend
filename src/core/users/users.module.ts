@@ -6,6 +6,7 @@ import { User } from './users.model';
 import { Role } from '../roles/roles.model';
 import { UserRoles } from '../roles/user-roles.model';
 import { RolesModule } from '../roles/roles.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [UsersController],
@@ -13,7 +14,7 @@ import { RolesModule } from '../roles/roles.module';
   imports: [
     SequelizeModule.forFeature([User, Role, UserRoles]),
     RolesModule,
-    //forwardRef(() => AuthModule) //предотвращение циклической зависимости
+    forwardRef(() => AuthModule) //предотвращение циклической зависимости
   ],
   exports: [
     UsersService
