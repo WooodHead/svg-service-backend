@@ -11,8 +11,8 @@ export class AuthService {
       constructor (private userService: UsersService,
             private jwtService: JwtService) {}
 
-      async login(userDto: CreateUserDto) {
-            const user = await this.validateUser(userDto)
+      async login(authdto: AuthUserDto) {
+            const user = await this.validateUser(authdto)
             return this.generateToken(user)
       }
 
@@ -30,17 +30,15 @@ export class AuthService {
       }
 
       async generateToken(user: User) {
-            const payload = {userName: user.username, id: user.ID, roles: user.roles}
-            console.log(payload);
-            
+            const payload = {userName: user.username, id: user.ID, roles: user.roles}            
             return {
                   token: this.jwtService.sign(payload)
             }
       }
 
-      private async validateUser (userDto: CreateUserDto) {
-            const user = await this.userService.getUserByUsername(userDto.username)
-            const passwordEquals = await bcrypt.compare(userDto.password, user.password)
+      private async validateUser (authdto: AuthUserDto) {
+            const user = await this.userService.getUserByEmail(authdto.email)
+            const passwordEquals = await bcrypt.compare(authdto.password, user.password)
             if(user && passwordEquals) {
                   return user
             } 
