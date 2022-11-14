@@ -1,6 +1,10 @@
 # compiled output
 /dist
 /node_modules
+development.env
+production.env
+.env
+database.helper.txt
 
 # Logs
 logs
