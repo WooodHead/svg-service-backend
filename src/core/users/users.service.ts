@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Role } from '../roles/roles.model';
 import { RolesService } from '../roles/roles.service';
 import { UserRoles } from '../roles/user-roles.model';
 import { AddRoleDto } from './dto/add.role.dto';
@@ -18,12 +19,11 @@ export class UsersService {
       async createUser(dto: CreateUserDto) {
             const user = await this.userRepository.create(dto)
             const role = await this.roleService.getRoleByValue('USER');
-            await this.userRolesRepository.create({
-              roleId: role.id,
-              userId: user.id
-            })
-            user.roles = [role]
-          return user
+            if(role && user) {
+              await user.$add('role', role.id)
+              return user
+            }
+            throw new HttpException('User or role is not defind', HttpStatus.NOT_FOUND)
       }
     
       async getAllUsers() {
