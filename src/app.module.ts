@@ -10,6 +10,8 @@ import { Role } from "./core/roles/roles.model";
 import { UserRoles } from "./core/roles/user-roles.model";
 import { RolesModule } from "./core/roles/roles.module";
 import { AuthController } from "./auth/auth.controller";
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
     controllers: [UsersController, RolesController, AuthController],
@@ -18,6 +20,30 @@ import { AuthController } from "./auth/auth.controller";
         ConfigModule.forRoot({
             envFilePath: `${process.env.NODE_ENV}.env`
         }),
+
+        MailerModule.forRootAsync({
+            useFactory: () => ({
+                transport: {
+                    host: process.env.SMTP_HOST,
+                    port: process.env.SMTP_PORT,
+                    secure: true,
+                    auth: {
+                        user: process.env.SMTP_USER,
+                        pass: process.env.SMTP_PASSWORD,
+                    },
+                },
+                defaults: {
+                    from: '"nest-modules" <modules@nestjs.com>',
+                },
+                template: {
+                    dir: __dirname + '/templates',
+                    adapter: new PugAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
+            }),
+          }),
 
         SequelizeModule.forRoot({
             dialect: 'postgres',

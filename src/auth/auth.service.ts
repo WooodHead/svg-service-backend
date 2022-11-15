@@ -5,11 +5,18 @@ import { User } from 'src/core/users/users.model';
 import { UsersService } from 'src/core/users/users.service';
 import { AuthUserDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt'
+import { MailerService } from '@nestjs-modules/mailer';
+import { v4 as uuidv4 } from 'uuid';
+import { InjectModel } from '@nestjs/sequelize';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
       constructor (private userService: UsersService,
-            private jwtService: JwtService) {}
+            private jwtService: JwtService,
+            private mailerService: MailerService,
+            @InjectModel(User) private userRepository: typeof User,
+            ) {}
 
       async login(authdto: AuthUserDto) {
             const user = await this.validateUser(authdto)
@@ -24,8 +31,14 @@ export class AuthService {
             }
 
             const hashPassword = await bcrypt.hash(userDto.password, 5);
-            await this.userService.createUser({...userDto, password: hashPassword});
-            const userData = await this.userService.getUserByUsername(userDto.username)
+            const activationLink = uuidv4();
+            console.log(activationLink);
+            await this.sendActivationLink(userDto.email, `${process.env.WEBSITE_URL}/auth/registration/${activationLink}`)
+
+            const user = await this.userService.createUser({...userDto, password: hashPassword}); 
+            user.activationLink = activationLink;
+            await user.save()
+            const userData = await this.userService.getUserByUsername(userDto.username);
             return this.generateToken(userData)
       }
 
@@ -43,5 +56,34 @@ export class AuthService {
                   return user
             } 
             throw new UnauthorizedException({message: 'password or phone is not corrected!'}); 
+      }
+
+      private async sendActivationLink(to: string, link: string) {
+            console.log(process.env.SMTP_USER);
+            console.log(process.env.SMTP_PASSWORD);
+
+            
+            await this.mailerService.sendMail({
+                  from: process.env.SMTP_USER,
+                  to: to,
+                  subject: 'Account activation to ' + process.env.WEBSITE_URL,
+                  text: '',
+                  html: 
+                  `
+                        <div>
+                              <h1>Go to the href to activate your account</h1>
+                              <a href="${link}">${link}</a>
+                        </div>
+                  `
+            })
+      }
+
+      async activate(activationLink: string) {
+            const user = await this.userRepository.findOne({where: {activationLink}, include: {all: true}});
+            if(!user) {
+                  throw new Error('Activation link is not available');
+            }
+            user.isActivate = true;
+            await user.save();
       }
 }

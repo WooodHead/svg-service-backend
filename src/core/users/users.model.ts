@@ -18,16 +18,24 @@ export class User extends Model <User, UserCreationAttribute> {
       ID: number;
 
       @ApiProperty({example: 1, description: 'Uniq userName'})
-      @Column({type: DataType.STRING, unique: true, allowNull: false, primaryKey: true})
+      @Column({type: DataType.STRING, unique: false, allowNull: false, primaryKey: true})
       username: string;
 
       @ApiProperty({example: 'psychoduckos@gmail.com', description: 'Uniq user email'})
-      @Column({type: DataType.STRING, unique: true, allowNull: false, primaryKey: true})
+      @Column({type: DataType.STRING, unique: false, allowNull: false, primaryKey: true})
       email: string;
 
       @ApiProperty({example: 'qweasdzxc123', description: 'user password'})
       @Column({type: DataType.STRING, allowNull: false})
       password: string;
+
+      @ApiProperty({example: '370e9d28-2f73-4997-8847-4e22e0e7cd43', description: 'activation link'})
+      @Column({type: DataType.STRING, allowNull: false, defaultValue: ''})
+      activationLink: string;
+
+      @ApiProperty({example: 'true', description: 'if user activate link'})
+      @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
+      isActivate: boolean;
 
       @BelongsToMany(() => Role, () => UserRoles)
       roles: Role[]
