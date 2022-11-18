@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Redirect } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Redirect, Res } from '@nestjs/common';
 import { CreateUserDto } from 'src/core/users/dto/create.user.dto';
 import { AuthService } from './auth.service';
 import { AuthUserDto } from './dto/auth.dto';
@@ -12,10 +12,11 @@ export class AuthController {
             return this.authService.login(dto)
       }
 
+      @Redirect('http://localhost:3001/landing', 200)
       @Get('/registration/:activateLink') 
-      async activate(@Param('activateLink') activateLink: string) {
-            await this.authService.activate(activateLink);
-            return Redirect(process.env.CLIENT_URL)
+      async activate(@Param('activateLink')  activateLink: string) {
+            await this.authService.activate(activateLink);        
+            return Redirect(`${process.env.CLIENT_URL}/landing`)
       }
 
       @Post('/register') 

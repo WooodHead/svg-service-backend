@@ -33,7 +33,7 @@ export class AuthService {
             const hashPassword = await bcrypt.hash(userDto.password, 5);
             const activationLink = uuidv4();
             console.log(activationLink);
-            await this.sendActivationLink(userDto.email, `${process.env.WEBSITE_URL}/auth/registration/${activationLink}`)
+            await this.sendActivationLink(userDto.email, `${process.env.SERVER_URL}/auth/registration/${activationLink}`)
 
             const user = await this.userService.createUser({...userDto, password: hashPassword}); 
             user.activationLink = activationLink;
@@ -66,7 +66,7 @@ export class AuthService {
             await this.mailerService.sendMail({
                   from: process.env.SMTP_USER,
                   to: to,
-                  subject: 'Account activation to ' + process.env.WEBSITE_URL,
+                  subject: 'Account activation to ' + process.env.CLIENT_URL,
                   text: '',
                   html: 
                   `
